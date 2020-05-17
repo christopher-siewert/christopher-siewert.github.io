@@ -1,3 +1,16 @@
+---
+layout: post
+title: "Bitcoin Futures Arbitrage Analysis"
+categories:
+  - Investments
+tags:
+  - bitcoin
+  - futures
+  - deribit
+  - python
+  - jupyter
+  - arbitrage
+---
 
 # Bitcoin Futures Arbitrage Analysis
 
@@ -21,11 +34,11 @@ Based on the insights in part 1 and 2, this notebook will create a model for the
 
 ### Background Information
 
-Users on Deribit can trade in a number of cryptocurrency derivates including options and futures. However, users are not able to actually buy or sell cryptocurrency on the platform. It doesn't accept traditional fiat currency; all deposits and withdrawals are done in crypto. Both the futures and options are cash settled, simply transferring the profits and losses between the bitcoin accounts of the platform users. 
+Users on Deribit can trade in a number of cryptocurrency derivates including options and futures. However, users are not able to actually buy or sell cryptocurrency on the platform. It doesn't accept traditional fiat currency; all deposits and withdrawals are done in crypto. Both the futures and options are cash settled, simply transferring the profits and losses between the bitcoin accounts of the platform users.
 
 However, derivative prices are always based on an underlying asset price. The bitcoin futures and options at Deribit have payoffs based on the price of bitcoin in USD.
 
-Thus, Deribit needs a way to track the fiat price of Bitcoin in order to determine the payoffs on options and futures. This brings us to our first important concept. 
+Thus, Deribit needs a way to track the fiat price of Bitcoin in order to determine the payoffs on options and futures. This brings us to our first important concept.
 
 #### The Deribit Bitcoin Index
 
@@ -33,11 +46,11 @@ Deribit's Bitcoin index is **the** price of bitcoin by which all their derivativ
 
 #### Regular Futures vs Perpetual Futures
 
-Deribit sells two types of futures, regular and perpetual. 
+Deribit sells two types of futures, regular and perpetual.
 
 Any listings with an expiry date are just typical futures contracts. The specification can be found [here](https://www.deribit.com/pages/docs/futures). Wiki and Investopedia can provide good explanations of how they work. When I refer to a *future* in this document, I mean a typical future.
 
-Perpetual futures are very different and have a number of unusual characteristics. We will discuss them in length in part 2. When I refer to a *perpetual*, I mean this special type of perpetual future. 
+Perpetual futures are very different and have a number of unusual characteristics. We will discuss them in length in part 2. When I refer to a *perpetual*, I mean this special type of perpetual future.
 
 ## Historical Future Price Data
 
@@ -101,7 +114,7 @@ plt.show()
 ```
 
 
-![png](output_6_0.png)
+![png](/assets/images/2019-05-01-bitcoin-futures-arbitrage-analysis/output_6_0.png)
 
 
 The first thing we notice is that the future tracks the index fairly closely. This is to be expected. Much more interesting for arbitrage analysis is the ratio between the futures price and the index price.
@@ -133,14 +146,14 @@ plt.show()
 ```
 
 
-![png](output_10_0.png)
+![png](/assets/images/2019-05-01-bitcoin-futures-arbitrage-analysis/output_10_0.png)
 
 
-Note: Some futures were traded for a longer time than others. Deribit used to have futures rotating every month, and it has since moved to futures rotating every quarter. Hence the difference in the number of days of trading data. 
+Note: Some futures were traded for a longer time than others. Deribit used to have futures rotating every month, and it has since moved to futures rotating every quarter. Hence the difference in the number of days of trading data.
 
 ### Initial Observations
 
-1. The futures contracts appear to follow the [convergence property](https://www.investopedia.com/terms/c/convergence.asp). The ratios tend to one as the contract gets closer to expiration. 
+1. The futures contracts appear to follow the [convergence property](https://www.investopedia.com/terms/c/convergence.asp). The ratios tend to one as the contract gets closer to expiration.
 2. Some future prices may be correlated. In particular, the BTC-28DEC18 and the BTC-29MAR19 have a very similar drastic drop, that I bet lines up in time.
 
 Let's test it.
@@ -160,7 +173,7 @@ plt.show()
 ```
 
 
-![png](output_12_0.png)
+![png](/assets/images/2019-05-01-bitcoin-futures-arbitrage-analysis/output_12_0.png)
 
 
 The prices are extremely correlated. The only divergence of greater than 1% is a short period at the end of 2018. The December 2018 future price was converging to 1, while the March 2019 future still had 3 months until expiration.
@@ -187,7 +200,7 @@ plt.plot(xs, ys);
 ```
 
 
-![png](output_14_0.png)
+![png](/assets/images/2019-05-01-bitcoin-futures-arbitrage-analysis/output_14_0.png)
 
 
 It's important to pay attention to the scale of the above graphs. There is a clear difference when the theoretical ratio is plotted alongside the real future index ratio.
@@ -211,7 +224,7 @@ plt.show()
 ```
 
 
-![png](output_16_0.png)
+![png](/assets/images/2019-05-01-bitcoin-futures-arbitrage-analysis/output_16_0.png)
 
 
 Theoretical arbitrage profits can be earned any time the real ratio is above or below the theoretical ratio. However, the appearance of profits often disappears once fees and transaction costs are taken into account.
@@ -246,14 +259,14 @@ plt.show()
 ```
 
 
-![png](output_18_0.png)
+![png](/assets/images/2019-05-01-bitcoin-futures-arbitrage-analysis/output_18_0.png)
 
 
 ### Analysis
 
 The blue ranges above are the no-arbitrage profit ranges. Any prices above or below the blue range should allow for arbitrage, given our assumptions.  Our estimate of 1.5% transaction fees is conservative. Deribit only charges 0.05% to buy or sell a future and 0.025% on the settlement. That means the sum total of fees from buying or selling a future is deribit is 0.075%. That leaves a margin of 1.425% for transaction fees on buying or short selling bitcoin. This is plenty; most large exchanges charge less than 0.5% per transaction or less than 1% for the two transactions necessary to complete the arbitrage.
 
-From this very simple analysis, it appears there may have been arbitrage opportunities. However the close correlation between the different futures prices compared to the index seems to suggest an efficient market, and a reason for the ratio being below or above the index, even if it was outside of our "arbitrage range". 
+From this very simple analysis, it appears there may have been arbitrage opportunities. However the close correlation between the different futures prices compared to the index seems to suggest an efficient market, and a reason for the ratio being below or above the index, even if it was outside of our "arbitrage range".
 
 ### Distribution of Ratios
 
@@ -274,7 +287,7 @@ plt.show()
 ```
 
 
-![png](output_20_0.png)
+![png](/assets/images/2019-05-01-bitcoin-futures-arbitrage-analysis/output_20_0.png)
 
 
 ### Strategies to Profit from Pricing Discrepancies
