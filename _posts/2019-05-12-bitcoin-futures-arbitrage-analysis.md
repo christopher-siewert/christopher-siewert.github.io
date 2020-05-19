@@ -112,7 +112,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-05-12-bitcoin-futures-arbitrage-analysis_files/2019-05-12-bitcoin-futures-arbitrage-analysis_7_0.png)
+![png](/assets/images/2019-05-12-bitcoin-futures-arbitrage-analysis_files/2019-05-12-bitcoin-futures-arbitrage-analysis_7_0.png)
 
 
 The first thing we notice is that the future tracks the index fairly closely. This is to be expected. Much more interesting for arbitrage analysis is the ratio between the futures price and the index price.
@@ -144,7 +144,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-05-12-bitcoin-futures-arbitrage-analysis_files/2019-05-12-bitcoin-futures-arbitrage-analysis_11_0.png)
+![png](/assets/images/2019-05-12-bitcoin-futures-arbitrage-analysis_files/2019-05-12-bitcoin-futures-arbitrage-analysis_11_0.png)
 
 
 Note: Some futures were traded for a longer time than others. Deribit used to have futures rotating every month, and it has since moved to futures rotating every quarter. Hence the difference in the number of days of trading data. 
@@ -171,7 +171,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-05-12-bitcoin-futures-arbitrage-analysis_files/2019-05-12-bitcoin-futures-arbitrage-analysis_13_0.png)
+![png](/assets/images/2019-05-12-bitcoin-futures-arbitrage-analysis_files/2019-05-12-bitcoin-futures-arbitrage-analysis_13_0.png)
 
 
 The prices are extremely correlated. The only divergence of greater than 1% is a short period at the end of 2018. The December 2018 future price was converging to 1, while the March 2019 future still had 3 months until expiration.
@@ -198,7 +198,7 @@ plt.plot(xs, ys);
 ```
 
 
-![png](assets/images/2019-05-12-bitcoin-futures-arbitrage-analysis_files/2019-05-12-bitcoin-futures-arbitrage-analysis_15_0.png)
+![png](/assets/images/2019-05-12-bitcoin-futures-arbitrage-analysis_files/2019-05-12-bitcoin-futures-arbitrage-analysis_15_0.png)
 
 
 It's important to pay attention to the scale of the above graphs. There is a clear difference when the theoretical ratio is plotted alongside the real future index ratio.
@@ -222,7 +222,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-05-12-bitcoin-futures-arbitrage-analysis_files/2019-05-12-bitcoin-futures-arbitrage-analysis_17_0.png)
+![png](/assets/images/2019-05-12-bitcoin-futures-arbitrage-analysis_files/2019-05-12-bitcoin-futures-arbitrage-analysis_17_0.png)
 
 
 Theoretical arbitrage profits can be earned any time the real ratio is above or below the theoretical ratio. However, the appearance of profits often disappears once fees and transaction costs are taken into account.
@@ -257,7 +257,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-05-12-bitcoin-futures-arbitrage-analysis_files/2019-05-12-bitcoin-futures-arbitrage-analysis_19_0.png)
+![png](/assets/images/2019-05-12-bitcoin-futures-arbitrage-analysis_files/2019-05-12-bitcoin-futures-arbitrage-analysis_19_0.png)
 
 
 ### Analysis
@@ -285,7 +285,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-05-12-bitcoin-futures-arbitrage-analysis_files/2019-05-12-bitcoin-futures-arbitrage-analysis_21_0.png)
+![png](/assets/images/2019-05-12-bitcoin-futures-arbitrage-analysis_files/2019-05-12-bitcoin-futures-arbitrage-analysis_21_0.png)
 
 
 ### Strategies to Profit from Pricing Discrepancies

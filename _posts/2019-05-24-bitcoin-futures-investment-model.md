@@ -1408,7 +1408,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_27_0.png)
+![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_27_0.png)
 
 
 ### Fees
@@ -1473,7 +1473,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_30_0.png)
+![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_30_0.png)
 
 
 
@@ -1512,7 +1512,7 @@ sns.kdeplot(individual_moment_funding[69])
 
 
 
-![png](assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_32_1.png)
+![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_32_1.png)
 
 
 
@@ -1534,7 +1534,7 @@ sns.kdeplot(df['funding'].resample('S').mean().interpolate().resample('M').mean(
 
 
 
-![png](assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_34_1.png)
+![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_34_1.png)
 
 
 
@@ -1585,7 +1585,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_38_0.png)
+![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_38_0.png)
 
 
 ## Analysis
@@ -1649,7 +1649,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_43_0.png)
+![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_43_0.png)
 
 
 ## Problems with the Model
@@ -1712,7 +1712,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_48_0.png)
+![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_48_0.png)
 
 
 This makes our strategy extremly risky. A better solution is to short the perpetual for the amount we have in margin.
@@ -1730,7 +1730,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_50_0.png)
+![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_50_0.png)
 
 
 ## Calculating Rate of Return
@@ -1754,7 +1754,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_53_0.png)
+![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_53_0.png)
 
 
 
@@ -1843,7 +1843,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_59_0.png)
+![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_59_0.png)
 
 
 Most of these variables are normally distributed. So there are going to be very few samples near the max and min values. This explains the variance of the RR in the bottom and top 10% of parameter values.
@@ -1922,7 +1922,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_64_0.png)
+![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_64_0.png)
 
 
 If we had perfect information we would know not to use this strategy anytime the final perpetual index ratio was below 0.998, and anytime the average funding rate is less than about -0.000065
@@ -2016,7 +2016,7 @@ sns.kdeplot(average_funding, label='model')
 
 
 
-![png](assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_73_1.png)
+![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_73_1.png)
 
 
 
@@ -2039,7 +2039,7 @@ sns.kdeplot(average_funding)
 
 
 
-![png](assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_75_1.png)
+![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_75_1.png)
 
 
 
@@ -2056,5 +2056,5 @@ sns.kdeplot(df_5Min['ratio'], label='real')
 
 
 
-![png](assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_76_1.png)
+![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_76_1.png)
 

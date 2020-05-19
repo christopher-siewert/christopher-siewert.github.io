@@ -156,7 +156,7 @@ sns.kdeplot(df1.resample('1Min').mean().interpolate(), label='4')
 
 
 
-![png](assets/images/2019-05-27-random-bitcoin-analysis_files/2019-05-27-random-bitcoin-analysis_6_1.png)
+![png](/assets/images/2019-05-27-random-bitcoin-analysis_files/2019-05-27-random-bitcoin-analysis_6_1.png)
 
 
 

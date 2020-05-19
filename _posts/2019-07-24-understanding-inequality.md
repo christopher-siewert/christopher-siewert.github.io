@@ -52,7 +52,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-07-24-understanding-inequality_files/2019-07-24-understanding-inequality_5_0.png)
+![png](/assets/images/2019-07-24-understanding-inequality_files/2019-07-24-understanding-inequality_5_0.png)
 
 
 ## Simulation
@@ -102,7 +102,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-07-24-understanding-inequality_files/2019-07-24-understanding-inequality_13_0.png)
+![png](/assets/images/2019-07-24-understanding-inequality_files/2019-07-24-understanding-inequality_13_0.png)
 
 
 ## Wild Inequality Appears
@@ -135,7 +135,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-07-24-understanding-inequality_files/2019-07-24-understanding-inequality_17_0.png)
+![png](/assets/images/2019-07-24-understanding-inequality_files/2019-07-24-understanding-inequality_17_0.png)
 
 
 ## The 1%
@@ -216,7 +216,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-07-24-understanding-inequality_files/2019-07-24-understanding-inequality_24_0.png)
+![png](/assets/images/2019-07-24-understanding-inequality_files/2019-07-24-understanding-inequality_24_0.png)
 
 
 This graph is so skewed it looks like the average success line must be a mistake. But it's placed correctly. The average success is just tiny compared to the hyper-success of some individuals.
@@ -294,7 +294,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-07-24-understanding-inequality_files/2019-07-24-understanding-inequality_31_0.png)
+![png](/assets/images/2019-07-24-understanding-inequality_files/2019-07-24-understanding-inequality_31_0.png)
 
 
 Getting the data exactly right doesn't matter for this demonstration.
@@ -408,7 +408,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-07-24-understanding-inequality_files/2019-07-24-understanding-inequality_39_0.png)
+![png](/assets/images/2019-07-24-understanding-inequality_files/2019-07-24-understanding-inequality_39_0.png)
 
 
 We've zoomed in on the tallest people. The total number of men between 73 inches (6'1") to 90 inches (7'6") is the area under the red curve. This includes the red shaded area and the blue shaded area. The total number of women between these heights is the area under the blue curve. The area under the red curve is much larger than the area under the blue curve. 
@@ -473,7 +473,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-07-24-understanding-inequality_files/2019-07-24-understanding-inequality_44_0.png)
+![png](/assets/images/2019-07-24-understanding-inequality_files/2019-07-24-understanding-inequality_44_0.png)
 
 
 It's clear that on this particular made up trait, the variation within a gender is much larger than the variation between genders. Overall men and women are quite similar on this trait.

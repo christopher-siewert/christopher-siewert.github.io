@@ -113,7 +113,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-05-20-bitcoin-perpetual-futures_files/2019-05-20-bitcoin-perpetual-futures_8_0.png)
+![png](/assets/images/2019-05-20-bitcoin-perpetual-futures_files/2019-05-20-bitcoin-perpetual-futures_8_0.png)
 
 
 It appears the perpetual tracks the index quite closely. But let's look at a plot of the ratio of the perpetual price and the index.
@@ -130,7 +130,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-05-20-bitcoin-perpetual-futures_files/2019-05-20-bitcoin-perpetual-futures_10_0.png)
+![png](/assets/images/2019-05-20-bitcoin-perpetual-futures_files/2019-05-20-bitcoin-perpetual-futures_10_0.png)
 
 
 This looks like a stationary process around a mean value of 1. There appear to be trends in the data; it looks like it is autocorrelated.
@@ -143,7 +143,7 @@ _ = plot_acf(df_D['ratio'])
 ```
 
 
-![png](assets/images/2019-05-20-bitcoin-perpetual-futures_files/2019-05-20-bitcoin-perpetual-futures_12_0.png)
+![png](/assets/images/2019-05-20-bitcoin-perpetual-futures_files/2019-05-20-bitcoin-perpetual-futures_12_0.png)
 
 
 This is a plot of correlation between days. High autocorrelation means that if the ratio is high one day than we expect it to be high the next. It appears there is significant correlation for a few days (each point is one day forward). But then after a few days there is not significant correlation.
@@ -165,7 +165,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-05-20-bitcoin-perpetual-futures_files/2019-05-20-bitcoin-perpetual-futures_15_0.png)
+![png](/assets/images/2019-05-20-bitcoin-perpetual-futures_files/2019-05-20-bitcoin-perpetual-futures_15_0.png)
 
 
 The ratios appear to be distributed in a bell like curve around one.
@@ -212,7 +212,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-05-20-bitcoin-perpetual-futures_files/2019-05-20-bitcoin-perpetual-futures_20_0.png)
+![png](/assets/images/2019-05-20-bitcoin-perpetual-futures_files/2019-05-20-bitcoin-perpetual-futures_20_0.png)
 
 
 We can see that the funding rate drastically varies with the price ratios. If the ratio was at a steady 1.003 (a difference of only 0.3%), then the annual funding rate would be at almost 300%.
@@ -236,7 +236,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-05-20-bitcoin-perpetual-futures_files/2019-05-20-bitcoin-perpetual-futures_23_0.png)
+![png](/assets/images/2019-05-20-bitcoin-perpetual-futures_files/2019-05-20-bitcoin-perpetual-futures_23_0.png)
 
 
 
@@ -246,7 +246,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-05-20-bitcoin-perpetual-futures_files/2019-05-20-bitcoin-perpetual-futures_24_0.png)
+![png](/assets/images/2019-05-20-bitcoin-perpetual-futures_files/2019-05-20-bitcoin-perpetual-futures_24_0.png)
 
 
 And here's the fequency of ratios, along with the funding rates that they cause.
@@ -272,7 +272,7 @@ plt.show()
 ```
 
 
-![png](assets/images/2019-05-20-bitcoin-perpetual-futures_files/2019-05-20-bitcoin-perpetual-futures_26_0.png)
+![png](/assets/images/2019-05-20-bitcoin-perpetual-futures_files/2019-05-20-bitcoin-perpetual-futures_26_0.png)
 
 
 # Arbitrage with the Perpetual
