@@ -1,16 +1,26 @@
 <!DOCTYPE html>
 <html lang="en-us">
 
-  {% include head.html %}
+{% include head.html %}
 
-  <body class="{{ page.layout }}{% if page.url == '/' %} home{% endif %}">
+<body class="{{ page.layout }}{% if page.url == '/' %} home{% endif %}">
 
-    {% include sidebar.html %}
+  {% include sidebar.html %}
 
-    <main class="container">
-      {{ content }}
-    </main>
+  <main class="container">
+    {{ content }}
+  </main>
 
-    {% include custom-foot.html %}
-  </body>
+  {% include custom-foot.html %}
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    processEscapes: true
+  }
+});
+</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</body>
+
 </html>

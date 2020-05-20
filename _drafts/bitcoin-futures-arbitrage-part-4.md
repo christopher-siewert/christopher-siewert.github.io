@@ -1,27 +1,28 @@
 ---
 layout: post
-title: "Bitcoin Futures Investment Modelling"
+title: "Bitcoin Futures Arbitrage Part 4"
 categories:
-  - Investments
+  - Bitcoin Futures Series
 tags:
   - bitcoin
   - futures
+  - perpetual future
   - deribit
-  - perpetual
   - python
-  - jupyter
   - arbitrage
+  - data science
+  - investments
   - monte carlo simulation
 ---
 
-## Part 3 - Modelling, Simulations, Decisions
+This is the fourth of a series about bitcoin futures on the exchange [Deribit.com](https://www.deribit.com). We will (1) model perpetual prices, (2) simulate potential profit senarios and (3) do some decision analysis on the investment.
 
-This part is concerned with acutally predicting the profitability of doing an arbitrage trade. It consits of three parts:
-1. Modelling of Perpetual Prices
-2. Monte Carlo (MC) Simulation of potential profits
-3. Decision analysis
+- [Part 1 - Getting the data]({% post_url 2019-05-11-bitcoin-futures-arbitrage-part-1 %})
+- [Part 2 - Were there arbitrage profits in the past?]({% post_url 2019-05-12-bitcoin-futures-arbitrage-part-2 %})
+- [Part 3 - Perpetual futures 101]({% post_url 2019-05-20-bitcoin-futures-arbitrage-part-3 %})
 
-First we will load all our perpetual data again.
+
+Let's load our perpetual data again.
 
 
 ```python
@@ -77,99 +78,6 @@ df_5 = df.resample('5Min').last().interpolate()
 ```python
 df_H = df.resample('H').last().interpolate()
 ```
-
-## Time Series Analysis
-
-
-```python
-time = datetime(2019, 5, 12, )
-train, test = df_H[]
-```
-
-
-```python
-warnings.simplefilter('ignore')
-res = sm.tsa.arma_order_select_ic(df_H['ratio'], max_ar=5, max_ma=5, ic=['bic'], trend='c')
-```
-
-Best is (2, 3)
-
-
-```python
-model = sm.tsa.ARMA(df_H['ratio'], (2, 3)).fit(disp=False)
-```
-
-
-```python
-model.summary()
-```
-
-
-```python
-df_H['2019-05-12'].between_time('7:00', '9:00')
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>perpetual</th>
-      <th>index</th>
-      <th>ratio</th>
-      <th>funding</th>
-    </tr>
-    <tr>
-      <th>date</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>2019-05-12 07:00:00</th>
-      <td>7524.00</td>
-      <td>7528.13</td>
-      <td>0.999451</td>
-      <td>-0.000049</td>
-    </tr>
-    <tr>
-      <th>2019-05-12 08:00:00</th>
-      <td>7435.75</td>
-      <td>7434.24</td>
-      <td>1.000203</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>2019-05-12 09:00:00</th>
-      <td>7378.25</td>
-      <td>7379.22</td>
-      <td>0.999869</td>
-      <td>0.000000</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
 
 ## Monte Carlo Simulation
 
@@ -237,1142 +145,6 @@ end_index_price = np.maximum(end_index_price, np.ones(trials))
 
 
 ```python
-def arma_sample(c, ar, ma, sd, y, resid, steps):
-    """Generates arma process values from the end of y
-    
-    Parameters
-    --------------------------------------------------
-    y: data
-    resid: residuals from arma model estimation
-    c: coefficient
-    ar: list of ar coefficients
-    ma: list of ma coefficients
-    sd: standard deviation of innovation
-    steps: number of forward steps
-    """
-    initial_length = len(y)
-    y = y.tolist()
-    resid = resid.tolist()
-    for _ in range(periods):
-        yhat = c
-        for i, value in enumerate(ar):
-            yhat += value * y[~i]
-        for i, value in enumerate(ma):
-            yhat += value * resid[~i]
-        u = sd * np.random.randn()
-        yhat += u
-        y.append(yhat)
-        resid.append(u)
-    return y[initial_length:]
-```
-
-
-```python
-def ar_sample(y, c, ar, sd, steps):
-    """Generates ar process values from the end of y
-    
-    Parameters
-    --------------------------------------------------
-    y: data
-    c: coefficient
-    ar: list of ar coefficients
-    sd: standard deviation of innovation
-    steps: number of steps forward to forecast
-    """
-    initial_length = len(y)
-    y = y.tolist()
-    for _ in range(steps):
-        yhat = c
-        for i, value in enumerate(ar):
-            yhat += value * y[~i]
-        u = sd * np.random.randn()
-        yhat += u
-        y.append(yhat)
-    return y[initial_length:]    
-```
-
-
-```python
-np.sqrt(model.sigma2)
-```
-
-
-
-
-    0.0005278886652563803
-
-
-
-
-```python
-arma_sample(model.params[0], model.arparams, model.maparams, np.sqrt(model.sigma2), df_H['ratio'], periods)
-```
-
-
-
-
-    [0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     ...]
-
-
-
-
-```python
-periods = days * 24
-ratios = np.array([])
-for i in range(trials):
-    ratios[i] = arma_sample(model.params[0], model.arparams, model.maparams, model.sigma2, df_H['ratio'], periods)
-ratios
-```
-
-
-    ---------------------------------------------------------------------------
-
-    TypeError                                 Traceback (most recent call last)
-
-    <ipython-input-41-d426e12aa331> in <module>
-          2 ratios = np.array([])
-          3 for i in range(trials):
-    ----> 4     ratios[i] = arma_sample(model.params[0], model.arparams, model.maparams, model.sigma2, df_H['ratio'], periods)
-          5 ratios
-
-
-    <ipython-input-36-e90dca6a6dd8> in arma_sample(c, ar, ma, sd, y, periods)
-         21         u = sd * np.random.randn()
-         22         yhat += u
-    ---> 23         y.append(yhat)
-         24         resid.append(u)
-         25     return y[initial_length:]
-
-
-    ~/anaconda3/envs/futures/lib/python3.7/site-packages/pandas/core/series.py in append(self, to_append, ignore_index, verify_integrity)
-       2780             to_concat = [self, to_append]
-       2781         return concat(
-    -> 2782             to_concat, ignore_index=ignore_index, verify_integrity=verify_integrity
-       2783         )
-       2784 
-
-
-    ~/anaconda3/envs/futures/lib/python3.7/site-packages/pandas/core/reshape/concat.py in concat(objs, axis, join, join_axes, ignore_index, keys, levels, names, verify_integrity, sort, copy)
-        253         verify_integrity=verify_integrity,
-        254         copy=copy,
-    --> 255         sort=sort,
-        256     )
-        257 
-
-
-    ~/anaconda3/envs/futures/lib/python3.7/site-packages/pandas/core/reshape/concat.py in __init__(self, objs, axis, join, join_axes, keys, levels, names, ignore_index, verify_integrity, copy, sort)
-        330                     " only Series and DataFrame objs are valid".format(type(obj))
-        331                 )
-    --> 332                 raise TypeError(msg)
-        333 
-        334             # consolidate
-
-
-    TypeError: cannot concatenate object of type '<class 'numpy.float64'>'; only Series and DataFrame objs are valid
-
-
-
-```python
 # Generate ending perpetual prices from the index
 end_perpetual_ratio = ppc[:,0]
 end_perpetual_price = end_index_price * end_perpetual_ratio
@@ -1408,7 +180,7 @@ plt.show()
 ```
 
 
-![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_27_0.png)
+![png](/assets/images/bitcoin-futures-arbitrage-part-4_files/bitcoin-futures-arbitrage-part-4_15_0.png)
 
 
 ### Fees
@@ -1473,7 +245,7 @@ plt.show()
 ```
 
 
-![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_30_0.png)
+![png](/assets/images/bitcoin-futures-arbitrage-part-4_files/bitcoin-futures-arbitrage-part-4_18_0.png)
 
 
 
@@ -1512,7 +284,7 @@ sns.kdeplot(individual_moment_funding[69])
 
 
 
-![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_32_1.png)
+![png](/assets/images/bitcoin-futures-arbitrage-part-4_files/bitcoin-futures-arbitrage-part-4_20_1.png)
 
 
 
@@ -1534,7 +306,7 @@ sns.kdeplot(df['funding'].resample('S').mean().interpolate().resample('M').mean(
 
 
 
-![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_34_1.png)
+![png](/assets/images/bitcoin-futures-arbitrage-part-4_files/bitcoin-futures-arbitrage-part-4_22_1.png)
 
 
 
@@ -1585,7 +357,7 @@ plt.show()
 ```
 
 
-![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_38_0.png)
+![png](/assets/images/bitcoin-futures-arbitrage-part-4_files/bitcoin-futures-arbitrage-part-4_26_0.png)
 
 
 ## Analysis
@@ -1649,7 +421,7 @@ plt.show()
 ```
 
 
-![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_43_0.png)
+![png](/assets/images/bitcoin-futures-arbitrage-part-4_files/bitcoin-futures-arbitrage-part-4_31_0.png)
 
 
 ## Problems with the Model
@@ -1712,7 +484,7 @@ plt.show()
 ```
 
 
-![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_48_0.png)
+![png](/assets/images/bitcoin-futures-arbitrage-part-4_files/bitcoin-futures-arbitrage-part-4_36_0.png)
 
 
 This makes our strategy extremly risky. A better solution is to short the perpetual for the amount we have in margin.
@@ -1730,7 +502,7 @@ plt.show()
 ```
 
 
-![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_50_0.png)
+![png](/assets/images/bitcoin-futures-arbitrage-part-4_files/bitcoin-futures-arbitrage-part-4_38_0.png)
 
 
 ## Calculating Rate of Return
@@ -1754,7 +526,7 @@ plt.show()
 ```
 
 
-![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_53_0.png)
+![png](/assets/images/bitcoin-futures-arbitrage-part-4_files/bitcoin-futures-arbitrage-part-4_41_0.png)
 
 
 
@@ -1843,7 +615,7 @@ plt.show()
 ```
 
 
-![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_59_0.png)
+![png](/assets/images/bitcoin-futures-arbitrage-part-4_files/bitcoin-futures-arbitrage-part-4_47_0.png)
 
 
 Most of these variables are normally distributed. So there are going to be very few samples near the max and min values. This explains the variance of the RR in the bottom and top 10% of parameter values.
@@ -1922,7 +694,7 @@ plt.show()
 ```
 
 
-![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_64_0.png)
+![png](/assets/images/bitcoin-futures-arbitrage-part-4_files/bitcoin-futures-arbitrage-part-4_52_0.png)
 
 
 If we had perfect information we would know not to use this strategy anytime the final perpetual index ratio was below 0.998, and anytime the average funding rate is less than about -0.000065
@@ -2016,7 +788,7 @@ sns.kdeplot(average_funding, label='model')
 
 
 
-![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_73_1.png)
+![png](/assets/images/bitcoin-futures-arbitrage-part-4_files/bitcoin-futures-arbitrage-part-4_61_1.png)
 
 
 
@@ -2039,7 +811,7 @@ sns.kdeplot(average_funding)
 
 
 
-![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_75_1.png)
+![png](/assets/images/bitcoin-futures-arbitrage-part-4_files/bitcoin-futures-arbitrage-part-4_63_1.png)
 
 
 
@@ -2056,5 +828,5 @@ sns.kdeplot(df_5Min['ratio'], label='real')
 
 
 
-![png](/assets/images/2019-05-24-bitcoin-futures-investment-model_files/2019-05-24-bitcoin-futures-investment-model_76_1.png)
+![png](/assets/images/bitcoin-futures-arbitrage-part-4_files/bitcoin-futures-arbitrage-part-4_64_1.png)
 

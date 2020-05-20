@@ -1,22 +1,28 @@
 ---
 layout: post
-title: "Bitcoin Perpetual Futures"
+title: "Bitcoin Futures Arbitrage Part 3"
 categories:
-  - Investments
+  - Bitcoin Futures Series
 tags:
   - bitcoin
-  - perpetual
-  - spot
   - futures
+  - perpetual future
   - deribit
   - python
-  - jupyter
   - arbitrage
+  - data science
+  - investments
 ---
 
-## Part 2 - Perpetual Futures
+This is the third of a series about bitcoin futures on the exchange [Deribit.com](https://www.deribit.com). We will go into detail on a unique financial instrument, the BTC perpetual future. This type of asset isn't commonly used in traditional financial markets, so we do a bit of exploratory data analysis. We'll see that it has some interesting properties that make it possible to use for arbitrage.
 
-Deribit also offer what are called *perpetual* futures. Eventually we will try to make money using these unique type of futures. But let's try to understand them first.
+- [Part 1 - Getting the data]({% post_url 2019-05-11-bitcoin-futures-arbitrage-part-1 %})
+- [Part 2 - Were there arbitrage profits in the past?]({% post_url 2019-05-12-bitcoin-futures-arbitrage-part-2 %})
+- [Part 3 - Perpetual futures 101]({% post_url 2019-05-20-bitcoin-futures-arbitrage-part-3 %})
+
+## Perpetual Futures
+
+Deribit offers what are called *perpetual* futures. Eventually we will try to make money using these unique type of futures. But let's try to understand them first.
 
 They are best described as **index matching** futures. It is a product that attempts to always mimic the spot price, but allows an investor to get extremely high leverage. They do this by setting up a futures contract with no settlement date, no expiration and they allow people to trade it freely.
 
@@ -113,7 +119,7 @@ plt.show()
 ```
 
 
-![png](/assets/images/2019-05-20-bitcoin-perpetual-futures_files/2019-05-20-bitcoin-perpetual-futures_8_0.png)
+![png](/assets/images/2019-05-20-bitcoin-futures-arbitrage-part-3_files/2019-05-20-bitcoin-futures-arbitrage-part-3_8_0.png)
 
 
 It appears the perpetual tracks the index quite closely. But let's look at a plot of the ratio of the perpetual price and the index.
@@ -130,7 +136,7 @@ plt.show()
 ```
 
 
-![png](/assets/images/2019-05-20-bitcoin-perpetual-futures_files/2019-05-20-bitcoin-perpetual-futures_10_0.png)
+![png](/assets/images/2019-05-20-bitcoin-futures-arbitrage-part-3_files/2019-05-20-bitcoin-futures-arbitrage-part-3_10_0.png)
 
 
 This looks like a stationary process around a mean value of 1. There appear to be trends in the data; it looks like it is autocorrelated.
@@ -143,12 +149,12 @@ _ = plot_acf(df_D['ratio'])
 ```
 
 
-![png](/assets/images/2019-05-20-bitcoin-perpetual-futures_files/2019-05-20-bitcoin-perpetual-futures_12_0.png)
+![png](/assets/images/2019-05-20-bitcoin-futures-arbitrage-part-3_files/2019-05-20-bitcoin-futures-arbitrage-part-3_12_0.png)
 
 
 This is a plot of correlation between days. High autocorrelation means that if the ratio is high one day than we expect it to be high the next. It appears there is significant correlation for a few days (each point is one day forward). But then after a few days there is not significant correlation.
 
-This implies that we can use a current perpetual index ratio to predict the ratio for the next few days.
+This means that we may be able to use a current perpetual index ratio to predict the ratio for the next few days.
 
 ## Distribution
 
@@ -165,7 +171,7 @@ plt.show()
 ```
 
 
-![png](/assets/images/2019-05-20-bitcoin-perpetual-futures_files/2019-05-20-bitcoin-perpetual-futures_15_0.png)
+![png](/assets/images/2019-05-20-bitcoin-futures-arbitrage-part-3_files/2019-05-20-bitcoin-futures-arbitrage-part-3_15_0.png)
 
 
 The ratios appear to be distributed in a bell like curve around one.
@@ -212,7 +218,7 @@ plt.show()
 ```
 
 
-![png](/assets/images/2019-05-20-bitcoin-perpetual-futures_files/2019-05-20-bitcoin-perpetual-futures_20_0.png)
+![png](/assets/images/2019-05-20-bitcoin-futures-arbitrage-part-3_files/2019-05-20-bitcoin-futures-arbitrage-part-3_20_0.png)
 
 
 We can see that the funding rate drastically varies with the price ratios. If the ratio was at a steady 1.003 (a difference of only 0.3%), then the annual funding rate would be at almost 300%.
@@ -236,7 +242,7 @@ plt.show()
 ```
 
 
-![png](/assets/images/2019-05-20-bitcoin-perpetual-futures_files/2019-05-20-bitcoin-perpetual-futures_23_0.png)
+![png](/assets/images/2019-05-20-bitcoin-futures-arbitrage-part-3_files/2019-05-20-bitcoin-futures-arbitrage-part-3_23_0.png)
 
 
 
@@ -246,7 +252,7 @@ plt.show()
 ```
 
 
-![png](/assets/images/2019-05-20-bitcoin-perpetual-futures_files/2019-05-20-bitcoin-perpetual-futures_24_0.png)
+![png](/assets/images/2019-05-20-bitcoin-futures-arbitrage-part-3_files/2019-05-20-bitcoin-futures-arbitrage-part-3_24_0.png)
 
 
 And here's the fequency of ratios, along with the funding rates that they cause.
@@ -272,7 +278,7 @@ plt.show()
 ```
 
 
-![png](/assets/images/2019-05-20-bitcoin-perpetual-futures_files/2019-05-20-bitcoin-perpetual-futures_26_0.png)
+![png](/assets/images/2019-05-20-bitcoin-futures-arbitrage-part-3_files/2019-05-20-bitcoin-futures-arbitrage-part-3_26_0.png)
 
 
 # Arbitrage with the Perpetual
@@ -330,14 +336,8 @@ print((f'\nIndex Price - Future Price = '
     Index Price - Future Price = $7335.49 - $7270.13 = $65.36
 
 
-The problem, is that the perpetual doesn't perfectly line up with the index. Thus they might not completly converge. There is also the issue of funding payments. We saw above the huge variablitiy in funding payments. If you get unlucky, the funding payments will complelty take away this profit.
+The problem, is that the perpetual doesn't perfectly line up with the index. Thus they might not completly converge. There is also the issue of funding payments. We saw above the huge variablitiy in funding payments. If you get unlucky, the funding payments will completely take away this profit.
 
 There are also other factors like counterparty risk. This is a real problem. Bitcoin exchanges are known to get hacked, or just lose people's money. We should take this into acount when evaluating any strategy involving cryptocurrency exchanges. We should expect a higher risk premium, to compensate for this higher counterparty risk that doesn't typically arise in traditional asset exchanges.
 
-## Conclusion
-
-The ratio of the perpetual price to the index price seems to be roughly symmetric about 1.
-
-In the next part, we will estimate time series models.
-
-Then, with that model and a number of other assumptions, we'll be able to simulate the profitibility of arbitrage given some inital starting asset prices.
+Next we will look at simulating these risks to get a probability distribution of potential profit situations. We will try to see if the variability in the perpetual index ratio and the funding rate will take away from our expected $65.36 of profit.

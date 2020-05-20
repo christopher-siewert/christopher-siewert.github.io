@@ -245,7 +245,7 @@ plt.show()
 ```
 
 
-![png](/assets/images/Funding-rate-arima-model_files/Funding-rate-arima-model_10_0.png)
+![png](/assets/images/bitcoin-futures-arbitrage-part-6_files/bitcoin-futures-arbitrage-part-6_10_0.png)
 
 
 
@@ -258,7 +258,7 @@ plt.show()
 ```
 
 
-![png](/assets/images/Funding-rate-arima-model_files/Funding-rate-arima-model_11_0.png)
+![png](/assets/images/bitcoin-futures-arbitrage-part-6_files/bitcoin-futures-arbitrage-part-6_11_0.png)
 
 
 
@@ -268,7 +268,7 @@ plt.show()
 ```
 
 
-![png](/assets/images/Funding-rate-arima-model_files/Funding-rate-arima-model_12_0.png)
+![png](/assets/images/bitcoin-futures-arbitrage-part-6_files/bitcoin-futures-arbitrage-part-6_12_0.png)
 
 
 
@@ -278,7 +278,7 @@ plt.show()
 ```
 
 
-![png](/assets/images/Funding-rate-arima-model_files/Funding-rate-arima-model_13_0.png)
+![png](/assets/images/bitcoin-futures-arbitrage-part-6_files/bitcoin-futures-arbitrage-part-6_13_0.png)
 
 
 
