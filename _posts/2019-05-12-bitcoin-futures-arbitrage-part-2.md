@@ -14,11 +14,12 @@ tags:
   - investments
 ---
 
-This is the second of a series about bitcoin futures on the exchange [Deribit.com](https://www.deribit.com). We will look at historical prices for futures on Deribit.com to see if there are any trends and explore market efficiency.
+This is the second of a series about bitcoin futures. We will look at historical prices for futures on Deribit.com to see if there are any trends and explore market efficiency.
 
 - [Part 1 - Getting the data]({% post_url 2019-05-11-bitcoin-futures-arbitrage-part-1 %})
 - [Part 2 - Were there arbitrage profits in the past?]({% post_url 2019-05-12-bitcoin-futures-arbitrage-part-2 %})
 - [Part 3 - Perpetual futures 101]({% post_url 2019-05-20-bitcoin-futures-arbitrage-part-3 %})
+- [Part 4 - Arbitrage Profit Analysis]({% post_url 2019-05-24-bitcoin-futures-arbitrage-part-4 %})
 
 ## Historical Future Price Data
 
@@ -85,7 +86,7 @@ plt.show()
 ![png](/assets/images/2019-05-12-bitcoin-futures-arbitrage-part-2_files/2019-05-12-bitcoin-futures-arbitrage-part-2_7_0.png)
 
 
-The first thing we notice is that the future tracks the index fairly closely. This is to be expected. Much more interesting for arbitrage analysis is the ratio between the futures price and the index price.
+The future tracks the index closely. The ratio of the prices will be useful for analysis.
 
 
 ```python
@@ -117,7 +118,7 @@ plt.show()
 ![png](/assets/images/2019-05-12-bitcoin-futures-arbitrage-part-2_files/2019-05-12-bitcoin-futures-arbitrage-part-2_11_0.png)
 
 
-Note: Some futures were traded for a longer time than others. Deribit used to have futures rotating every month, and it has since moved to futures rotating every quarter. Hence the difference in the number of days of trading data. 
+Some futures were traded for a longer time than others. Deribit used to have futures rotating every month, and it has since moved to futures rotating every quarter. Hence the difference in the number of days of trading data. 
 
 ### Initial Observations
 
@@ -195,7 +196,7 @@ plt.show()
 ![png](/assets/images/2019-05-12-bitcoin-futures-arbitrage-part-2_files/2019-05-12-bitcoin-futures-arbitrage-part-2_17_0.png)
 
 
-Theoretical arbitrage profits can be earned any time the real ratio is above or below the theoretical ratio. However, the appearance of profits often disappears once fees and transaction costs are taken into account.
+Theoretical arbitrage profits can be earned any time the real ratio is above or below the theoretical ratio. But the appearance of profits often disappears once fees and transaction costs are taken into account.
 
 So let's add in 1.5% transaction fees.
 
@@ -232,7 +233,7 @@ plt.show()
 
 ### Analysis
 
-The blue ranges above are the no-arbitrage profit ranges. Any prices above or below the blue range should allow for arbitrage, given our assumptions.  Our estimate of 1.5% transaction fees is conservative. Deribit only charges 0.05% to buy or sell a future and 0.025% on the settlement. That means the sum total of fees from buying or selling a future is deribit is 0.075%. That leaves a margin of 1.425% for transaction fees on buying or short selling bitcoin. This is plenty; most large exchanges charge less than 0.5% per transaction or less than 1% for the two transactions necessary to complete the arbitrage.
+The blue ranges above are the no-arbitrage profit ranges. Any prices above or below the blue range should allow for arbitrage, given our assumptions.  Our estimate of 1.5% transaction fees is conservative. Deribit only charges 0.05% to buy or sell a future and 0.025% on the settlement. That means the sum of fees from buying or selling a future is deribit is 0.075%. That leaves a margin of 1.425% for transaction fees on buying or short selling bitcoin. This is plenty; most large exchanges charge less than 0.5% per transaction or less than 1% for the two transactions necessary to complete the arbitrage.
 
 From this very simple analysis, it appears there may have been arbitrage opportunities. However the close correlation between the different futures prices compared to the index seems to suggest an efficient market, and a reason for the ratio being below or above the index, even if it was outside of our "arbitrage range". 
 
@@ -260,15 +261,15 @@ plt.show()
 
 ### Strategies to Profit from Pricing Discrepancies
 
-There are a few ways of attempting to arbitrage pricing errors. And to get any more detailed than our generic 5% risk free rate assumption, we have to delve into the details of the particular strategy.
+There are a few ways of attempting to arbitrage pricing errors. And to get any more detailed than our generic 5% risk-free rate assumption, we have to delve into the details of the particular strategy.
 
 #### 1. Long/short futures and short/long bitcoins in the classic spot future arbitrage trade.
 
-This is not risk-free. The futures settlement price is based on the Deribit bitcoin index, and it is possible that the bitcoin price you are able to sell/buy for is fairly different from the Deribit index. This risk can be limited if you bought bitcoin at the specific exchanges in the proportion the exchanges contribute to the index. That would make your bitcoin portfolio 100% Deribit index tracking, but would likely be too much hassle.
+This is not risk-free. The futures settlement price is based on the Deribit bitcoin index. The bitcoin price you pay might differ from the Deribit index. This risk can be limited if you bought bitcoin at the specific exchanges in the proportion the exchanges contribute to the index. That would make your bitcoin portfolio 100% Deribit index tracking, but would likely be too much hassle.
 
 The main issue is you have to factor in the real interest rates you will pay (instead of the generic 5% risk-free rate). This is particularly difficult for when the futures price is below the index and you have to short bitcoin. [Bitfinix](https://www.bitfinex.com/) is one of the largest exchanges that allows going short. A quick look at historical Bitfinex bitcoin margin interest rates at [https://bfxrates.com/] will show that the rates are quite volatile and have been as high as 30% and as low as 1% annually within the past 6 months.
 
-The difficulty of shorting bitcoin could explain the tendency for the futures prices to be lower than my no arbitrage ranges.
+The difficulty of shorting bitcoin could explain the tendency for the futures prices to be lower than my no-arbitrage ranges.
 
 #### 2. Synthetic long/short using options
 
@@ -276,12 +277,12 @@ You can create a synthetic long/short with equal strike options. The options on 
 
 #### 3. Long/short the perpetual
 
-The market price of the perpetual future is expected to be quite close to the index and thus can also provide bitcoin exposure.
+The market price of the perpetual future is expected to be quite close to the index and thus can also provide bitcoin exposure. This is a promising option because you can get both the future exposure and the bitcoin exposure on a margin. Traditional arbitrage assumes that you borrow \$1000, buy \$1000 of bitcoins and short the future. Using the perpetual you can get \$1000 of bitcoin exposure while only putting up \$10 of margin. This lowers the cost of capital and results in more arbitrage profit. 
 
-Both strategy (1) and (2) are potential ways of profiting from price discrepancies, but in this report I will only focus on (3), using the perpetual. Profit analyses of the other two methods are further research questions.
+I will expand on this strategy in later posts.
 
 ## Conclusion
 
-We got our first taste of the market data. We see futures prices that are consistently different from their underlying and from the theory. However different futures are quite highly correlated in how and when they diverge from the expected values.
+We got our first taste of the market data. We see futures prices that are consistently different from their underlying and the theory. However different futures are quite highly correlated in how and when they diverge from the expected values.
 
 In [Part 3]({% post_url 2019-05-20-bitcoin-futures-arbitrage-part-3 %}) I will look into using the perpetual as a method to arbitrage these price differences.

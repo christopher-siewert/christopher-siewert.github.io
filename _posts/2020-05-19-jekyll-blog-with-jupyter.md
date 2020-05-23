@@ -18,7 +18,7 @@ Name your notebooks just like you would name your Jekyll posts.
 
 Notebooks in the `_notebooks` folder that start with a date will get moved to the `_posts` folder and any that start with a character will get moved to the `_drafts` folder.
 
-#### Requirments
+#### Requirements
 
 - Unix OS
 - make
