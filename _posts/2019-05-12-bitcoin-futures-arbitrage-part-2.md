@@ -277,7 +277,7 @@ You can create a synthetic long/short with equal strike options. The options on 
 
 #### 3. Long/short the perpetual
 
-The market price of the perpetual future is expected to be quite close to the index and thus can also provide bitcoin exposure. This is a promising option because you can get both the future exposure and the bitcoin exposure on a margin. Traditional arbitrage assumes that you borrow \$1000, buy \$1000 of bitcoins and short the future. Using the perpetual you can get \$1000 of bitcoin exposure while only putting up \$10 of margin. This lowers the cost of capital and results in more arbitrage profit. 
+The market price of the perpetual future is expected to be quite close to the index and thus can also provide bitcoin exposure. This is a promising option because you can get both the future exposure and the bitcoin exposure on a margin. Traditional arbitrage assumes that you borrow \\$1000, buy \\$1000 of bitcoins and short the future. Using the perpetual you can get \\$1000 of bitcoin exposure while only putting up \\$10 of margin. This lowers the cost of capital and results in more arbitrage profit. 
 
 I will expand on this strategy in later posts.
 
