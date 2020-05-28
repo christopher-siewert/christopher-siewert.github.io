@@ -1,0 +1,426 @@
+---
+layout: post
+title: "The Ultimate Guide to Triangular Arbitrage"
+tags:
+  - bitcoin
+  - python
+  - arbitrage
+  - investments
+  - algorithms
+  - triangular arbitrage
+  - cryptocurrency
+---
+
+In 2016, I started down a path that would consume me for the next few years⁠—cryptocurrency arbitrage. A game where millions of dollars are at stake and mere milliseconds separate the winners from the losers. The learning curve is steep⁠—I paid a hefty price in both time and money to learn the game. But eventually, I created a frankenstein system that made money.
+
+You are looking at the single most complete document that exists about how to make money using triangular arbitrage (tri-arb). This is both a technical guide and a memoir.
+
+# Roadmap
+
+1. [Absolute Basics - What is Triangular Arbitrage?](#basics)
+2. [Algorithmic Analysis](#algorithmic-analysis)
+3. [Implementation Details](#implementation-details)
+4. [Speed tricks](#need-for-speed)
+
+# Basics
+
+Let's break down the term triangular arbitrage. First, arbitrage is a fancy word for buying low and selling high to make money risk free.
+
+Imagine you are looking to buy bitcoin and start browsing online exchanges. Bitcoin costs \\$5000 at Bob's exchange but \\$5500 at Jim's exchange.
+
+Displaying unrivalled business acumen, you decide to buy as much \\$5000 bitcoin as you can get your greedy little hands on. You transfer them to Jim's exchange, sell them for \\$5500 and make a clean \\$500 for each bitcoin.
+
+You just completed bitcoin arbitrage.
+
+But don't expect this situation to last for long. Searching for easy money, lots of smart individuals like yourself will do the same thing. Hordes of people will go to the \\$5000 exchange, buying as much bitcoin as possible. The price at that exchange will quickly rise. Bitcoin in hand, the horde will flood to the \\$5500 exchange looking to sell and the price will crash.
+
+Equilibrium is reached when both markets have the same price, \\$5250. Then no more arbitrage profits can be made and all market inefficiencies are gone.
+
+Arbitrage is different from regular buying and selling things because you execute the transactions simultaneously so that you guarantee the money. Buying bitcoin, waiting a week and selling it for a 300\% return is not arbitrage.
+
+### Triangular?
+
+Triangular arbitrage is arbitrage but using 3 currencies instead of 2. Here's an example using US dollars, Canadian Dollars and Euros.
+
+Exchange Name | Trade Available
+--- | ---
+Bob's | 1 USD for 1.5 CAD
+Jim's | 1.5 CAD for 2 Euro
+Ted's | 2 Euros for 1.1 USD
+
+We start with 1 USD. We buy 1.5 CAD, trade that for 2 Euros, and trade those Euros for 1.1 USD. We end up back with USD and made a sweet 10 cents.
+
+Simple enough? Well, things get more complicated when looking at real exchange rate data because you have to convert back and forth e.g. price of USD in CAD vs price of CAD in USD.
+
+As a reminder, if you have 1 USD to 1.5 CAD, you can find it in terms of 1 CAD by dividing by 1.5. so you get 0.67 USD for 1 CAD. It's helpful to think of it as a ratio—1.5 CAD to 1 USD. Then divide both sides by 1.5 to get 1 CAD to 0.67 USD.
+
+Here's the same example but with exchange rates as they are typically expressed.
+
+_        | USD  | CAD  | Euro
+---      | ---  | ---  | ---
+**USD**  | 1    | 1.5  | 1.9
+**CAD**  | 0.67 | 1    | 1.33
+**Euro** | 0.55 | 0.75 | 1
+
+This table means we can trade 1 USD for 1.5 CAD or 1.9 Euros. And we can trade 1 Euro for 0.55 USD and 0.75 CAD.
+
+Just like before, starting with USD we trade 1 USD for 1.5 CAD. That 1.5 CAD is traded for 1.5 $\times$ 1.33 = 2 Euros. The 2 Euros are traded for 2 $\times$ 0.55 = 1.10 USD.
+
+This calculation simplifies to just multiplying all the exchange rates together and seeing if you get a value above 1. 
+
+$1.5 \times 1.33 \times 0.55 = 1.1$
+
+Trading USD -> CAD -> Euro -> USD makes money. But how about a different order? Why not USD -> Euro -> CAD -> USD? Does the order matter? 
+
+Lets check! USD -> Euro -> CAD -> USD is $1.9 \times 0.75 \times 0.67 = 0.95$. You lose 5 cents on that round trip.
+
+So yes, order matters. 
+
+Most often you should expect that **all** round trips will lose money. If there is free money on the ground, people will pick it up. And when the horde trades USD -> CAD to complete the arbitrage, it will cause the exchange rate to go down. Prices are at a stable equilibrium when there are no cycles that make money.
+
+## Intra-exchange vs Cross-exchange
+
+Regular arbitrage is done cross-exchange. Bitcoin prices are different on every exchange and it often appears as if there is free money. Take a look at bitcoin prices on May 27, 2020:
+
+![img](\assets\images\bitcoin-prices.png)
+
+But cross-exchange arbitrage has several risks:
+
+- You are racing other people—arbitrage is a zero-sum game.
+- You have to hold bitcoin—the price might go way down before you can sell it.
+- You have to account for trading fees.
+- You have to account for price slippage (larger orders get a worse price because you move lower in the order book).
+- You face counterparty risk—exchanges can get hacked or go bankrupt. This has happened many times for big exchanges.
+- You have to account for the cost of withdrawing and depositing to exchanges.
+- You have to move a lot of money around. When I did this my bank got upset—they thought I was money laundering. Twice I triggered the anti-fraud detection AI system and got my bank account frozen. Regular wire transfers to different countries look sketchy. After the second time they froze my account I went in and tried to explain the legitimacy of what I was doing. But this completely backfired as my bank was anti-cryptocurrency so they told me that I couldn't deal with cryptocurrency exchanges or they would close my account. This shocked me considering how much I was paying in wire fees.
+
+All these risks mean that the prices are often different for a reason—"There ain't no such thing as a free lunch" is solid advice when it comes to investments. Fees often take away any profits. Transferring bitcoin from one exchange to another takes about an hour. The price can move against you during that time so it adds variance to your profits.
+
+And if you see an exchange that has a way higher BTC price for weeks on end, this price probably reflects the underlying conditions of dealing with the exchange. For instance, I found that exchanges with consistently higher BTC prices always had either higher withdrawal fees or a long withdrawal wait time. 
+
+Quadriga, a Canadian bitcoin exchange, was the perfect example priced in counterparty risk. In 2017, Quadriga was the most popular exchange in Canada. It had around 70\% of the Canadian market. But in 2018 it started to take longer and longer for cash withdrawals to arrive. And because of this, the BTC price was regularly 3\% higher than other exchanges even after all transaction fees, including deposits and withdrawals. Earning a 3\% return on arbitrage is insane. But when you sold bitcoin and tried to withdraw cash it took a month to get from Quadriga to your bank account. This was obvious evidence of cash flow problems—waiting a week was typical. Waiting a month for cash meant you could do the arbitrage transaction once a month, for a 3\% return on your money per month. That's still an incredible return (43% a year). And I did this exact trade many times, making 3\% per trip. But Quadriga soon went bankrupt—the 3\% return existed because people knew that Quadriga was having problems. Arbitrageurs were worried about leaving cash with Quadriga and facing the risk that their withdrawal might never show up. So they demanded a much higher price for selling bitcoin. I got lucky, realized what was going on and stopped trading at Quadriga a while before they declared bankruptcy. I never received some of my final cash withdrawals but I still made good money. I was lucky, lots of people lost big.
+
+Arbitrage is based on the law of one price—equivalent assets should always trade at the same price. But it turns out that cash holdings on different exchanges are not equivalent assets, even if the bitcoins are. Holding cash on some exchanges was riskier than others and thus the value of cash holdings on those exchanges was lower. This resulted in the appearance of differences in bitcoin prices when it was really a difference in the value of cash. 
+
+Triangular arbitrage can be done cross-exchange, doing a cycle of three currencies with some orders on different exchanges. But it can also be done intra-exchange, just looking at the orders within one exchange. This would mean doing a USD to BTC to ETH to USD cycle all on one exchange. And this removes the big problem of constantly moving money around. You don't have to try and factor in the difference in counterparty risk to see if an apparent arbitrage opportunity is just reflecting some underlying properties of the exchange. So after I ran into problems with my bank, I focused on intra-exchange triangular arbitrage.
+
+# Algorithmic Analysis
+
+Here's where we get into how to code a tri-arb bot.
+
+Typical cryptocurrency exchanges have tons of currencies. Instead of a 3x3 table, you have a 100x100 table. How do you know which series of trades is going to work, if any?
+
+The most obvious solution is to find all possible 3 currency combinations and then multiply the exchange rates. Any currency cycle that multiplies to greater than one means you can make money. You can do this using 3 loops over the currencies.
+
+So I coded up my very first tri-arb bot and had it running on Quadriga back when it was the main Canadian exchange. It only had CAD, USD, bitcoin, litecoin, and ethereum so finding all cycles of 3 was easy.
+
+But later on in my journey, I started to look at more than just Quadriga. I wanted to collect data on a few exchanges and see which would be most profitable. 
+
+I remember looking at Binance, the largest Bitcoin exchange in the world at the time, which had hundreds of different altcoins. And I was disappointed by the results—there weren't many opportunities. But something spurred me on to try looking at longer trade sequences where you would buy and sell 4 different currencies. This consisted of me just adding another loop to my code. And I started finding more profitable trades. This surprised me—I thought a 4 currency combo was a total shot in the dark because exchanges charge fees on each trade. So completing 4 trades you end up spending quite a bit more in fees. I thought that the extra fees would eat up the profits. I was wrong—big time. This caused me to look at even longer cycles. I kept finding profitable trades of more currencies, with some using 7 or 8! Now almost all profitable trades I found were between more than 3 coins. 
+
+So I needed to find all 7 currency combinations and then check each. But what if there is an 8 sequence trade? How do we know we have found all of them? If you have 100 currencies and want to make permutations of 7, there are $100! \over 93!$ or 80 billion choices. I also wanted to look at the exchange Hitbtc and it had something like 400 cryptocurrencies. The amount of permutations with 400 currencies is massive. What is the most efficient way to do all these calculations?
+
+My program was getting unwieldy with 10 loops. And then when I took an algorithms class I realized this problem can be formulated as a graph search problem. 
+
+We can visualize the problem as a weighted digraph. Each currency corresponds to a node, while the exchange rates correspond to edges. Each edge has a source node and a destination node. The weight of an edge from node $u$ to $v$ is the amount of $v$ we can buy with 1 $u$. Then an arbitrage opportunity exists if we find a cycle in the graph where the edges multiply to more than 1.
+
+We can use graph shortest path algorithms to find this cycle. But there is a problem⁠—shortest path algorithms assume the edges are summed together. Triangular arbitrage is multiplicative. We calculate the total amount of USD we have at the end by multiplying all the exchange rates together.
+
+So to turn multiplication into addition, we set the edges to be the log of the exchange rate.
+
+The other problem is that we are trying to find the **longest** path. We assume that most series of trades will not be profitable and will result in a final trip value of less than 1. We want the trades that result in the largest value. Thus we set edges to be the negative log of exchange rates. Now shortest path algorithms will find the smallest value, which will be our most profitable trade.
+
+Here's that logic in formulas:
+
+When $R_{ij}$ is the exchange rate between currency $i$ and $j$ then we have arbitrage if
+
+$$R_{1,2} \times R_{2,3} \times R_{3,4} \times \ldots \times R_{k-1,k} \times R_{k,1} > 1$$
+
+$$\log R_{1,2} + \log R_{2,3} + \log R_{3,4} + \ldots + \log R_{k-1,k} + \log R_{k,1} > 0$$
+
+$$(-\log R_{1,2}) + (-\log R_{2,3}) + (-\log R_{3,4}) + \ldots + (-\log R_{k-1,k}) + (-\log R_{k,1}) < 0$$
+
+As we need the shortest path in a graph with negative edge weights, the Bellman-Ford algorithm is the best choice. It is similar to Dijkstra's algorithm and works via relaxation. It finds the shortest path to all nodes from a starting node and can detect cycles where the sum of the edges is a negative value. The running time of Bellman-Ford is O(|V||E|). Here |E| is O($n^2$) where $n$ is the number of nodes so the total time complexity is O($n^3$). So we can find profitable cycles of **any** length in the equivalent of three loops. 
+
+## Bellman-Ford
+
+Given a Graph $G(V, E)$, with edges ($u$, $v$, $w$) where $w$ is the weight from node $u$ to node $v$, the Bellman-Ford algorithm is:
+
+1. Set the distance to the starting node to 0 and set the distance to all other nodes to infinity.
+2. Loop over all edges and check if the distance to the destination node is shorter if it takes the edge. Update the distances with min(distance($v$), distance($u$) + $w$). Now you have all the shortest paths of length 1.
+3. Repeat step 2 |V| - 1 times. At each iteration i, this will find all the new shortest paths of at most length i.
+4. |V| - 1 is the longest possible path with no cycle. So repeat step 2 one more time. If any distances are updated then it knows that the path is length |V|, which could only occur if there is a negative cycle.
+
+I stored the graph in an edge list representation which consists of a list of nodes and a list of edges. I also add a dummy node with a link to all nodes and use it as the start node to make sure we can detect negative cycles not reachable if we were to pick an existing node as the start. This probably isn't necessary as the graphs you use in currency exchange should be connected—it should be possible to get to any currency from any other currency. But I added this step just in case. It doesn't change the time complexity.
+
+Then we modify the algorithm slightly to keep track of the paths. We don't just want to know that a negative cycle exists, we want to know what it is. To do this we keep track of the predecessor to a node in the shortest path, then when we find a negative cycle we loop back through the predecessors until we get to a repeated node.
+
+This will output the first negative cycle found, you can change it to print out all negative cycles. You just have to filter out the same cycle in different orders. For example, \['EUR', 'USD', 'CAD'\] and \['USD', 'CAD', 'EUR'\] are the same series of trades.
+
+
+```python
+import math
+nodes = ['CAD', 'USD', 'EUR']
+edges = [['USD', 'CAD', 1.5],
+         ['USD', 'EUR', 1.9],
+         ['CAD', 'USD', 0.67],
+         ['CAD', 'EUR', 1.33],
+         ['EUR', 'USD', 0.55],
+         ['EUR', 'CAD', 0.75]]
+
+def bellman_ford(nodes, edges):
+
+    for edge in edges:
+        edge[2] = -math.log(edge[2])
+    
+    for node in nodes:
+        edges.append(('dummy', node, 0))
+    
+    nodes.append('dummy')
+    
+    distance = dict.fromkeys(nodes, float('inf'))
+    distance['dummy'] = 0
+    
+    predecessor = dict.fromkeys(nodes)
+
+    for _ in range(len(nodes) - 1):
+        for (u, v, w) in edges:
+            if distance[u] + w < distance[v]:
+                distance[v] = distance[u] + w
+                predecessor[v] = u
+
+    for (u, v, w) in edges:
+        if distance[u] + w < distance[v]:
+            cycle = [v]
+            last = predecessor[v]
+            while last not in cycle:
+                cycle.append(last)
+                last = predecessor[last]
+            cycle.reverse()
+            return cycle
+
+    return 'No arbitrage possible'
+
+bellman_ford(nodes, edges)
+```
+
+
+
+
+    ['EUR', 'USD', 'CAD']
+
+
+
+# Implementation Details
+
+So far we've mastered the math of tri-arb and we know that Bellman-Ford has got our backs. But we are not quite ready to head out into the real world just yet. There's a lot of specifics that make things tricky.
+
+## Exchange APIs
+
+Back in 2016, exchange APIs were garbage. They were poorly documented and inaccurate. Poloniex in particular didn't have anything resembling good documentation⁠—you had to piece it together by scouring forum posts. There are no standards, one currency pair could be named "BTC-ETH", "BTC_ETH", or "BTCETH".
+
+Exchange API libraries are a godsend. Try [ccxt](https://github.com/ccxt/ccxt) or try [ccxws](https://github.com/altangent/ccxws) for the websocket version. 
+
+I did a lot of coding up exchange APIs by hand, and that is time I wish I could get back.
+
+APIs are a bit better documented these days, but still expect lots of trial and error.
+
+## Spread
+
+You need to consider the bid-ask spread. In the example above we assumed there was just **one** exchange rate. It doesn't work like that. Instead of a single price, there is an order book⁠—a sorted list of orders people have previously placed. So an order book for bitcoin might look like:
+
+Bids | Asks
+--- | --- 
+Price, Amount | Price, Amount
+\\$7500, 0.1 BTC | \\$7600, 0.3 BTC
+\\$7450, 10 BTC | \\$7620, 5 BTC
+\\$7420, 2 BTC | \\$7700, 10 BTC
+
+This means that 3 people want to buy bitcoin. The highest offer (bid) is for an exchange rate of \\$7500 per bitcoin, and that person wants to buy 0.1 BTC. The next highest offer is for \\$7450 per bitcoin and they want to buy 10 BTC.
+
+Similarly, 3 people want to sell bitcoin. The lowest selling offer (ask) is \\$7600 per bitcoin, and they want to sell 0.3 BTC.
+
+Let's work through an example of how this order book would change when someone places a new order. Imagine that Jim wants to buy 1 bitcoin and is willing to pay up to \\$7600 for it. Then when he makes his \\$7600 buy order, he is matched with the \\$7600 sell offer and the deal is done. But that person only wanted to sell 0.3 bitcoin, leaving part of Jim's order unfilled. His leftover amount of 0.7 BTC will get put on the order book.
+
+The updated order book will look like this:
+
+Bids | Asks
+--- | --- 
+Price, Amount | Price, Amount
+\\$7600, 0.7 BTC | \\$7620, 5 BTC 
+\\$7500, 0.1 BTC | \\$7700, 10 BTC
+\\$7450, 10 BTC | 
+\\$7420, 2 BTC | 
+
+The spread refers to the difference between the bid and the ask prices. If you want to buy or sell bitcoin immediately, you have to buy at a slightly higher price and sell at a slightly lower price. This means that there is not just one price of bitcoin. Usually, when you see people talk about **the** price of bitcoin, they take the average of the best bid and best ask. This is called the mid-price. But it's not a price that you can instantly trade at. You could make an offer at the mid-price and let it sit there but there is no guarantee that someone else will fill it.
+
+If you put an offer in the order book at a specific price and let it sit there, that is called a limit order and you are called the market maker. If you match with a previously posted offer you are called a market taker.
+
+## Fees
+
+You also have to consider fees. Every exchange charges fees on each trade. So now you need to make the edges of the graph the exchange rate, after fees. You can accomplish this by multiplying the exchange rate by 1 minus the fee amount. So if an exchange charges 1% in fees, multiply the exchange rate by 0.99. That only works for simple percentage fees though. Some exchanges have complicated fee structures and charge different levels of fees depending on how much you trade and charge different fees depending on if you are the market maker vs market taker. 
+
+## How much to Trade
+
+Bellman-Ford tells us which cycle to trade, but it doesn't tell us how much we should trade. The top order price that you used as the exchange rate can be for any amount. The orders you plan to fill won't all be the same size. You have to find the highest common liquidity—the order with the lowest real dollar value. The math gets messy as you have to convert each order into a common currency and compare them. If you make too big of an order, you end up going further down the order book and face price slippage. 
+
+If you want to get real fancy, sometimes there will be an opportunity using the top 2 bids or asks. Here's an example:
+
+Assume arbitrage is possible if you buy 1 BTC for \\$10,000. The top ask is 0.2 BTC for \\$9,900 and the next ask is 5 BTC for \\$10,025. If you make a 1 BTC market order, you will get 1 BTC for a total price of $0.2 \times 9,900 + 0.8 \times 10,025 = 10,000$ Thus you can complete the trade with 1 BTC instead of only using the top offer and completing a trade with 0.2 BTC.
+
+But when looking down at the full order book for every currency the math gets tricky. It essentially boils down to having different exchange rates depending on the amount you want to trade. And the exchange rates were the input into our Bellman-Ford algorithm. Do we have to run Bellman-Ford for each potential trade amount?
+
+Luckily, the answer is no⁠—we can just run it once using the exchange rate given by the best bid or ask. Then you can loop through progressively larger trade amounts and calculate profit based on the full order book for those currencies. This works because if there is a profitable trade using the top 2 orders, then it will also be profitable using just the top order. Bellman-Ford narrows down the possible cycles⁠—you just need to find the best amount.
+
+The profit percentage will be at its maximum for the smallest trade amount and will decrease as you trade larger amounts and go deeper into the order book. You can continue increasing the order size until the marginal profit is 0, as this will maximize profit on each trade. But you face the risk of larger losses if your trades don't go through because you were too slow. This is a trade-off and I'm not sure which is best.
+
+## Minimum Trade Amounts
+
+I remember looking at HitBTC and the minimum order sizes of each currency varied drastically. One might have a min of \\$100 USD equivalent and the other a min of \\$1 USD. This means that even when you find the lowest common liquidity, sometimes you can't execute it because you can't trade that small in one currency. So store all the minimums and check for those.
+
+## Order Precision
+
+Every asset has a smallest unit. The penny is the smallest unit of a dollar. You can't buy something with half a penny or get half a penny in change.
+
+The smallest unit of bitcoin is 0.00000001 BTC and is called a satoshi, named after Bitcoin's creator. It's worth about one-hundredth of a penny.
+
+But exchanges don't let you trade amounts as precise as a satoshi because it is so small. They round any bitcoin amounts to a reasonable number of decimals. 
+
+For example, I think on HitBTC you were limited to trades of increments in 0.01 BTC. So if your bot wants to buy 0.055 BTC you are forced to buy either 0.06 or 0.05 BTC. This is a problem because you can't buy the same amount of each currency for your arbitrage. The calculations we were doing assumed you would buy BTC and exchange the entire amount for ETH. But you can't exchange exactly that amount. And 0.01 BTC is worth a lot. Today it's worth \\$100, which means you were limited to buying or selling \\$100 dollar increments of bitcoin.
+
+All is not lost⁠—you can still make money even if the exact amounts don't line up. Look at it like making the arbitrage trade, and then just randomly also trading a small amount of a different currency. On average you shouldn't be that much worse off by trading assets at market price. I ended up deducting the extra fees I was paying from the expected profit to see if it was worth it. So if I had to trade an extra 0.005 BTC above my arbitrage amount of 0.055 BTC, I assumed that I was getting a fair price for it and was only losing the fees on 0.005 BTC traded. But fees on an extra \\$50 of trading cuts into your margins. Arbitrage is about doing a ton of trades for very slim margins.
+
+Some exchanges and currencies had such coarse-grained order precision that it wasn't worth it.
+
+The order precision is different for each currency so you need a hash table of all the values. Some exchanges provide this in their API, others don't.
+
+## How much profit do you pull the trigger on?
+
+I set a parameter in my bot that decided how profitable the trade needed to be to execute it. The more profit you demand, the fewer trades you make. But if you don't have a profit buffer than you can end up making trades that lose money just because of rounding issues. I found that many exchanges' fee documentation was inaccurate. The true fees I paid were slightly different from my calculations so a profit buffer helped. The exact value of this parameter will depend on the exchange and how much volume you need. Some exchanges lower your fees if you have more volume and thus making trades where you break even is worth it.
+
+## Round Trip Lockout
+
+It takes time before the trades you send in will be visible in the order book⁠—between 500ms and 1000ms. If your bot is running non-stop during that time, it will continue to see the trades you intend to fill as profitable opportunities. And it will continue alerting you about the profitable trades. A bad mistake would be to see the profitable trade, send in orders, see the same profitable trade, and resend in the same orders over and over again for one second. You have to prevent trading based on the orders that you intend to fill.
+
+The simplest solution is to stop all trading until you see confirmation of your orders. But then you give up any profit on other currencies for the next 1000ms.
+
+A better way to do it is to preemptively delete the orders you plan to fill from your in-memory version of the order book. (Or modify them if you don't fill the whole order). Then you can continue looking for profits on the orders that you didn't already interact with.
+
+I only ever implemented the stop all trading solution. I thought that the too many arbitrage opportunities at once problem was a low priority fix and I never got around to it.
+
+# Need for Speed
+
+Up until now, we have just been focused on getting the calculations right. But that doesn't guarantee success, not even close. You are in a race and only one winner gets the jackpot at the finish line. It is you vs the world. When I first started doing this I would just log any profit opportunities⁠—I didn't have the bot set up to send in trades yet. The arb opportunities never lasted longer than a second, usually closer to half a second. Just a blink of an eye, too fast for humans to be making the trades. There had to be other bots out there. 
+
+I realized there was money sitting out there waiting for me⁠—I just had to be fast enough to take it. It's a dangerous game because if you send trades in too late you will lose money.
+
+I was reminded of playing the pokemon games on my gameboy as a kid. They have an extremely fixed story structure, where when you reach specific checkmarks your rival pops out of nowhere to battle you. And no matter how fast you complete the game, he is always one step ahead, waiting to battle you. In arbitrage, you have to break the game and go faster than your rival.
+
+## Going Faster
+
+First, understand the system. Then you will be able to beat your rival.
+
+An exchange receives an order and updates its order book. They send me this information. About 100ms later we get it through the internet. Our program does its calculations in 2ms and sends orders to the exchange. 400ms later the exchange gets the orders. So the big time sink here is network latency. Optimizing the speed of the program isn't the highest value activity. Working hard to shave 0.5ms off your calculation time doesn't have a huge impact when your orders take anywhere from 400ms to 800ms to get there.
+
+The first thing I did was to run my bot on a server instead of my home computer. That got my ping down quite a bit. I tried a few different hosts to see which one would have the lowest ping. The problem is that exchanges use Cloudflare, a CDN. You might get sent to one of many different servers as your initial contact point—you're trying to hit a moving target. I just used trial and error to find a server with low latency.
+
+But then I realized that it takes a long time for the exchange to process an order. Sometimes up to a second. So if you trade USD for BTC, wait for the BTC, then trade that, it's already been 2 seconds and your profits are gone. I was left with the bitter taste of my rival's dust on many occasions. Losing money was a terrible reward for sinking months of my free time into this endeavor.
+
+I really thought about giving up at this point. I didn't understand how my rival could be making trades so fast. Especially on the sequences of 7 trades! That would take like 3 seconds to get all the trades through and end up with more USD than I started with. 
+
+But I had a breakthrough. The only way to go fast enough is to hold **all currencies**, waiting in reserve, and then make all the trades simultaneously. This makes a huge difference in speed and is a necessity unless the arbitrage opportunities are sitting there for seconds. So I decided to plunge in headfirst and distributed my money between several currencies. I only used a few to start because I didn't have enough capital to fund hundreds of different currencies.
+
+## Nonce errors
+
+I thought I had broken through the barrier and that easy money was just going to be pouring into my account. But things were just getting started, and I hadn't levelled up enough to face my rival.
+
+Because you run into a problem when you try to do so many simultaneous trades. Each exchange API usually requires a nonce—an integer number that goes up by one for each API call you make. When you send a bunch of trades all in a row without waiting for your response, you don't know in what order they will arrive. This is because they can get routed through the internet in different ways. Even if you send them order 1, 2, 3, they can show up 3, 1, 2. So your nonces are going to be wrong from the exchange's point of view.
+
+The only way I found to get around this is to make a bunch of API keys, and use a different one for each trade, with a different nonce for each key. Usually, you could just check for confirmation of each order, and if a nonce is out of order, resend that trade. But we can't wait for one slow trade⁠—my rival will be spending his money on a new yacht already.
+
+## Limit vs Market Orders?
+
+One big decision you have to make is whether to do limit or market orders. A limit order posts the order for a specific amount, while a market order just matches whatever the best offer is. 
+
+Market orders are simpler to make, you don't specify a price. But if you are late—your rival beats you to the punch and takes that profitable order off the book—a market order will go through and make the deal with the next best offer. And that results in a loss.
+
+And you can't beat your rival every time. Even if you are the fastest arbitrage bot, you will still lose sometimes because of the inherent delay in the system. When you get a price update, it is a snapshot in time from 100ms ago. But more orders have gone in during the last 100ms and maybe your arb opportunity is off the order book already. Then you do your calculations and send in your orders. Your orders get there in 500ms. In all that time someone else might have taken away your arb trades by accident.
+
+And it's even worse than this. When a snapshot of the order book is created to send to you, there is already a queue of unprocessed orders. These are orders the exchange has received, but not entered into the order book yet. So even if you had instant access to the order book, you can't know what the queue of unprocessed orders looks like. Sometimes it would take 1 second for one of my orders to confirm. That means that any snapshot of the order book could have trades from the past second queued up and unprocessed. Even if you instantly saw the order book, instantly did calculations, and instantly got your trades to the exchange, your trades would be last in the unprocessed queue. And there might be a trade in the queue that steals your profit.
+
+Below I walk through an example where you would beat your rival but still lose money because a regular customer took the arb opportunity accidentally.
+
+Time | Event
+--- | --- 
+-450ms | Jim (a regular customer) sends a market order
+-5ms | Jim's order gets to exchange and goes into queue
+0ms | Order book sends update #1 that doesn't include Jim's order to me
+1ms | Order book sends update #1 to my rival
+5ms | Order book processes Jim's order (arb profits gone)
+100ms | You get order book update #1
+101ms | You process update #1
+102ms | You detect arb based off old book and send order
+105ms | Your rival gets update #1
+107ms | Your rival detects arb and sends order
+500ms | Exchange recieves your order
+505ms | Exchange recieves your rival's order 
+510ms | Exchange processes your order but you are too late
+515ms | Exchange process your rival's order but they are too late
+
+I found that a much better strategy was to just do limit orders at the same price to match the other limit order. Then if someone stole the order from me, my limit order would just sit open. And you have a choice. (1) You can cancel it and just accept that you lost money because of trading fees. Or (2) you let it sit there and hope it closes eventually. I started just letting them sit there and found that most of the time the order would close within a few days. Because cryptocurrencies were so volatile, the price would usually bounce to where I needed it.
+
+If you leave your limit orders open, your cryptocurrencies can get out of balance while the orders wait to fill. My portfolio would also get out of balance because of the change in the value of different cryptocurrencies. You want approximately equal dollar value amounts in each currency or at least the minimum trade amount in each coin.
+
+## Orderbook representation
+
+Program optimization is not an important factor but it is still worthwhile discussing the data structure you use for your version of the order book in memory. Depending on the exchange you might have a ton of order book updates. And your bot needs to be able to quickly take these updates and construct the order book. 
+
+The most obvious implementation is to just store limit orders as objects in an array. Even just a list of (price, amount) tuples works. The only important detail is that you want to store the bids and the asks in separate arrays so that you get easy access to the best bid/ask. Fetching the top bid/ask is O(1) but adding or deleting limit orders is O(n) as you might have to shift the entire array. Putting the best bid/ask at the end of your array might be faster as more orders are probably executed at the end, so you get O(1) for updating the best ask/bid. But I never tested the time difference.
+
+A better implementation is to use a binary search tree with limit orders as nodes, sorted by price. The limit orders also have links to the next and previous limit orders to make a doubly linked list. You also store each limit order in a hash table with its price as the key. Then you get O(1) for fetching data, O(log n) for adding a limit order, O(1) for deleting orders. You can see this approach in https://github.com/Crypto-toolbox/HFT-Orderbook. But this is overkill as we are constrained by internet latency more than anything else.
+
+## Multiple IPs
+
+I never got around to implementing this, but it is something that I considered doing.
+
+Some exchanges only offered an HTTP API, but most offer WebSockets now. Exchanges will rate limit HTTP APIs. This prevents you from getting the most accurate data. You can use multiple IP's to get around that. 
+
+Websockets give real-time data updates, but connection speeds still vary. This is because there is a program responsible for sending "real-time" updates and sends these updates one at a time. In effect, exchanges have a list of WebSocket connections so the data gets sent out to each user one by one. It's not that simple because multiple servers can be sending websocket updates, so there is no single master order. But some connections will get data faster than others. And your goal is to be further up in the list than your rival. This is random and hard to control. But you can make a bunch of WebSocket connections and test the speed of each by recording the time you get the same data. Then you drop the slow ones and just use the fast ones. But most exchanges won't like it if you open a ton of WebSocket connections, so they either shut them down or just don't respond to some.
+
+But if you create these connections from separate IP addresses you will be in the clear.
+
+## Measuring speed
+
+My program had spurts of success and of failure. I think it was due to changes in connection speed. A slow connection is serious because you lose almost every race but continue to send in some trades and just leak fees. But measuring your connection speed is not easy. If you just ping an exchange you will just get a response from Cloudflare or their load balancer. You never reach the server processing orders. So even with consistent ping to the host, the time before your orders get in the order processing queue can vary drastically. I ended up just stopping the program if I lost on too many trades in a row to try and protect against this.
+
+You can measure total round trip time by measuring the time between placing an order and seeing it on the book. This would involve placing a special limit order deep in the book so that it wouldn't be filled. Make it an unusual volume so that you could pick it out of the anonymous book and then cancel it once you see it. This would provide a round trip time from order creation to order book updates received. Then if this round trip time is bigger than average,  you can stop trading until it goes back down. But there are still flaws as if my round trip time is large, maybe my rival's round trip time is also large and I can still beat him. But it's a useful metric to log. Then you can compare round trip times to success percentage and see if there is a correlation.
+
+## Risk-Free?
+
+The whole point of arbitrage is that it is supposed to be risk-free. But you have to hold as many currencies as you want to trade between. Holding a portfolio of 100 cryptocurrencies is ultra risky. And small altcoin prices can shoot up and down a lot, leaving the value of your portfolio unclear on a day to day basis. Figuring out the dollar value of your portfolio is surprisingly complicated. It is difficult to tell if you are even making money because your bot will just be swapping between 100 cryptocurrencies. So you have to take snapshots of portfolio amounts, and convert that all into a cash value periodically to track your earnings. I recommend storing your portfolio values at specific periods so you can do a comparison between what the value of your portfolio would have been if you did no arbitrage. This will tell you the true profits of your bot.
+
+## Reduce your Crypto Exposure
+
+If you want to limit your exposure to crypto while still making money from arbitrage you should go short on cryptocurrency. Going short means betting against it.
+
+Almost all cryptocurrency prices are heavily correlated to bitcoin. So to remove all your risk you calculate the bitcoin value of your portfolio and short that much bitcoin. Now when crypto prices go down, your short investment should profit as much as your currencies lose. But shorting bitcoin opens up a whole other can of worms as the interest you pay is unpredictable. I remember it one time it jumped from around from 6\% annually to 40\%. Now you make or lose money based on the bitcoin interest rate.
+
+## Bitcoin Beta
+
+Towards the end of my arb experiments, I tried to get fancy. I used a topic from finance and tried to calculate the beta of my portfolio. Beta is an estimate of risk arising from general market changes as opposed to specific asset changes.
+
+The price of a stock is based on both general market movements as well as firm-specific events. Some companies are much more sensitive to general market movements. A good example is a company that makes jewelry vs a company that makes bread. If the economy goes way down and people lose their jobs, they will not stop buying bread. But they might stop buying jewelry. So we expect the jewelry company to suffer, but the bread company to be fine.
+
+Beta is a statistical measurement of this effect and is based on how correlated the prices of two assets are. If a cryptocurrency has a beta of 2 compared to BTC, then when bitcoin goes up 10\% in a day, we expect this cryptocurrency to go up 20\% on that day.
+
+Usually, beta is calculated compared to the stock market. You compare the price of one stock to general price movements in the S&P 500 index. But cryptocurrency prices don't depend on stock movements. Instead, cryptocurrency prices rise and fall with the price of bitcoin. So I calculated the beta of my assets compared to bitcoin. Then I could short precisely the right amount of bitcoin so that my exposure evened out. If my portfolio beta was 0.9, and worth \\$1000, then I should short \\$900 BTC to cancel out currency fluctuations.
+
+But I never got around to implementing this in practice. You could also short different currencies in proportion to your holdings, but that gets even more complicated.
+
+# Why did I stop?
+
+This is all past tense. I don't have any tri-arb bots running at the moment. I got everything working and it was glorious. Then the profits started slowing down. Tri-arb relies on market inefficiencies and markets get more efficient over time. It became harder and harder to get the trade first and my percentage of immediately filled orders went down.
+
+The best time for market inefficiencies is when prices are swinging wildly. When one cryptocurrency shoots up in value, sometimes the other exchange rates lag. Tri-arb is best when prices are very volatile. Towards the end, my bot would sit there silently for a few days, waiting for arb opportunities, and only making money during big price swings.
+
+Holding cryptocurrencies is risky. I stopped getting fair returns for the level of risk I was taking on. But every day new exchanges pop up⁠—new arb profits are waiting for the fleet-footed who can best their rival. Good luck to you all.
