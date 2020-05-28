@@ -13,7 +13,7 @@ tags:
 
 In 2016, I started down a path that would consume me for the next few years⁠—cryptocurrency arbitrage. A game where millions of dollars are at stake and mere milliseconds separate the winners from the losers. The learning curve is steep⁠—I paid a hefty price in both time and money to learn the game. But eventually my jerry-built system was making serious money.
 
-You are looking at the single most complete document that exists about how to make money using triangular arbitrage (tri-arb). This is both a technical guide and a memoir.
+You are looking at the single most complete document that exists about how to make money using triangular arbitrage (tri-arb). This is both a technical guide and a memoir. \[Editor's Note: 7500 words ~ 25 min read\]
 
 # Roadmap
 
