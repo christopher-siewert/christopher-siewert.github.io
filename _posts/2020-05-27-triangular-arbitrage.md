@@ -11,7 +11,7 @@ tags:
   - cryptocurrency
 ---
 
-In 2016, I started down a path that would consume me for the next few years⁠—cryptocurrency arbitrage. A game where millions of dollars are at stake and mere milliseconds separate the winners from the losers. The learning curve is steep⁠—I paid a hefty price in both time and money to learn the game. But eventually, my jerry-built system was making serious money.
+In 2016, I started down a path that would consume me for the next few years⁠—cryptocurrency arbitrage. A game where millions of dollars are at stake and mere milliseconds separate the winners from the losers. The learning curve is steep⁠—I paid a hefty price in both time and money to learn the game. But eventually my jerry-built system was making serious money.
 
 You are looking at the single most complete document that exists about how to make money using triangular arbitrage (tri-arb). This is both a technical guide and a memoir.
 
@@ -36,7 +36,7 @@ But don't expect this situation to last for long. Always up for easy money, othe
 
 Equilibrium is reached when both markets have the same price, \\$5250. Then no more arbitrage profits can be made and all market inefficiencies are gone.
 
-Arbitrage is different from regular buying and selling things because you execute the transactions simultaneously to lock in a guaranteed profit. Buying bitcoin, waiting a week and selling it for a 300\\% return is not arbitrage.
+Arbitrage is different from regular buying and selling things because you execute the transactions simultaneously to lock in a guaranteed profit. Buying bitcoin, waiting a week and selling it for a 300% return is not arbitrage.
 
 ### Triangular?
 
@@ -98,7 +98,7 @@ All these risks mean that the prices are often different for a reason—"There a
 
 And if you see an exchange that has a way higher BTC price for weeks on end, this price probably reflects the underlying conditions of dealing with the exchange. For instance, I found that exchanges with consistently higher BTC prices always had either higher withdrawal fees or a long withdrawal wait time. 
 
-Quadriga, a Canadian bitcoin exchange, was the perfect example of priced in counterparty risk. In 2017, Quadriga was the most popular exchange in Canada. It had around 70\\% of the Canadian market. But in 2018 it started to take longer and longer for cash withdrawals to arrive. And because of this, the BTC price was regularly 3\\% higher than other exchanges even after all transaction fees, including deposits and withdrawals. Earning a 3\\% return on arbitrage is insane. But when you sold bitcoin and tried to withdraw cash it took a month to get from Quadriga to your bank account. This was obvious evidence of cash flow problems—waiting a week was typical. Waiting a month for cash meant you could do the arbitrage transaction once a month, for a 3\\% return on your money per month. That's still an incredible return (43\\% a year). And I did this exact trade many times, making 3\\% per trip. But Quadriga soon went bankrupt—the 3\\% return existed because people knew that Quadriga could go belly up. Arbitrageurs were worried about leaving cash with Quadriga and facing the risk that their withdrawal might never show up. So they demanded a much higher price for selling bitcoin. I got lucky, realized what was going on and stopped trading at Quadriga a while before they declared bankruptcy. I never received some of my final cash withdrawals but I still made good money. I was lucky⁠—lots of people lost big.
+Quadriga, a Canadian bitcoin exchange, was the perfect example of priced in counterparty risk. In 2017, Quadriga was the most popular exchange in Canada. It had around 70% of the Canadian market. But in 2018 it started to take longer and longer for cash withdrawals to arrive. And because of this, the BTC price was regularly 3% higher than other exchanges even after all transaction fees, including deposits and withdrawals. Earning a 3% return on arbitrage is insane. But when you sold bitcoin and tried to withdraw cash it took a month to get from Quadriga to your bank account. This was obvious evidence of cash flow problems—waiting a week was typical. Waiting a month for cash meant you could do the arbitrage transaction once a month, for a 3% return on your money per month. That's still an incredible return (43% a year). And I did this exact trade many times, making 3% per trip. But Quadriga soon went bankrupt—the 3% return existed because people knew that Quadriga could go belly up. Arbitrageurs were worried about leaving cash with Quadriga and facing the risk that their withdrawal might never show up. So they demanded a much higher price for selling bitcoin. I got lucky, realized what was going on and stopped trading at Quadriga a while before they declared bankruptcy. I never received some of my final cash withdrawals but I still made good money. I was lucky⁠—lots of people lost big.
 
 Arbitrage is based on the law of one price—equivalent assets should always trade at the same price. But it turns out that cash holdings on different exchanges are not equivalent assets, even if the bitcoins are. Holding cash on some exchanges was riskier than others and thus the value of cash holdings on those exchanges was lower. This resulted in the appearance of differences in bitcoin prices when it was really a difference in the value of cash. 
 
@@ -220,7 +220,7 @@ So far we've mastered the math of tri-arb and we know that Bellman-Ford has got 
 
 Back in 2016, exchange APIs were garbage. They were poorly documented and inaccurate. Poloniex in particular didn't have anything resembling good documentation⁠—you had to piece it together by scouring forum posts. There are no standards, one currency pair could be named "BTC-ETH", "BTC_ETH", or "BTCETH".
 
-Exchange API libraries are a godsend. Try [ccxt](https://github.com/ccxt/ccxt) or try [ccxws](https://github.com/altangent/ccxws) for the websocket version. 
+Exchange API libraries are a godsend. Try [ccxt](https://github.com/ccxt/ccxt) or try [ccxws](https://github.com/altangent/ccxws) for the WebSocket version. 
 
 I did a lot of coding up exchange APIs by hand, and that is time I wish I could get back.
 
@@ -259,7 +259,7 @@ If you put an offer in the order book at a specific price and let it sit there, 
 
 ## Fees
 
-You also have to consider fees. Every exchange charges fees on each trade. So now you need to make the edges of the graph the exchange rate, after fees. You can accomplish this by multiplying the exchange rate by 1 minus the fee amount. So if an exchange charges 1\\% in fees, multiply the exchange rate by 0.99. That only works for simple percentage fees though. Some exchanges have complicated fee structures and charge different levels of fees depending on how much you trade and charge different fees depending on if you are the market maker vs market taker. 
+You also have to consider fees. Every exchange charges fees on each trade. So now you need to make the edges of the graph the exchange rate, after fees. You can accomplish this by multiplying the exchange rate by 1 minus the fee amount. So if an exchange charges 1% in fees, multiply the exchange rate by 0.99. That only works for simple percentage fees though. Some exchanges have complicated fee structures and charge different levels of fees depending on how much you trade and charge different fees depending on if you are the market maker vs market taker. 
 
 ## How much to Trade
 
@@ -378,7 +378,7 @@ Program optimization is not an important factor but it is still worthwhile discu
 
 The most obvious implementation is to just store limit orders as objects in an array. Even just a list of (price, amount) tuples works. The only important detail is that you want to store the bids and the asks in separate arrays so that you get easy access to the best bid/ask. Fetching the top bid/ask is O(1) but adding or deleting limit orders is O(n) as you might have to shift the entire array. Putting the best bid/ask at the end of your array might be faster as more orders are probably executed at the end, so you get O(1) for updating the best ask/bid. But I never tested the time difference.
 
-A better implementation is to use a binary search tree with limit orders as nodes, sorted by price. The limit orders also have links to the next and previous limit orders to make a doubly linked list. You also store each limit order in a hash table with its price as the key. Then you get O(1) for fetching data, O(log n) for adding a limit order, O(1) for deleting orders. You can see this approach in https://github.com/Crypto-toolbox/HFT-Orderbook. But this is overkill as we are constrained by internet latency more than anything else.
+A better implementation is to use a binary search tree with limit orders as nodes, sorted by price. The limit orders also have links to the next and previous limit orders to make a doubly linked list. You also store each limit order in a hash table with its price as the key. Then you get O(1) for fetching data, O(log n) for adding a limit order, O(1) for deleting orders. You can see this approach in [https://github.com/Crypto-toolbox/HFT-Orderbook]. But this is overkill as we are constrained by internet latency more than anything else.
 
 ## Multiple IPs
 
@@ -386,7 +386,7 @@ I never got around to implementing this, but it is something that I considered d
 
 Some exchanges only offered an HTTP API, but most offer WebSockets now. Exchanges will rate limit HTTP APIs. This prevents you from getting the most accurate data. You can use multiple IP's to get around that. 
 
-Websockets give real-time data updates, but connection speeds still vary. This is because there is a program responsible for sending "real-time" updates and sends these updates one at a time. In effect, exchanges have a list of WebSocket connections so the data gets sent out to each user one by one. It's not that simple because multiple servers can be sending websocket updates, so there is no single master order. But some connections will get data faster than others. And your goal is to be further up in the list than your rival. This is random and hard to control. But you can make a bunch of WebSocket connections and test the speed of each by recording the time you get the same data. Then you drop the slow ones and just use the fast ones. But most exchanges won't like it if you open a ton of WebSocket connections, so they either shut them down or just don't respond to some.
+WebSockets give real-time data updates, but connection speeds still vary. This is because there is a program responsible for sending "real-time" updates and sends these updates one at a time. In effect, exchanges have a list of WebSocket connections so the data gets sent out to each user one by one. It's not that simple because multiple servers can be sending WebSocket updates, so there is no single master order. But some connections will get data faster than others. And your goal is to be further up in the list than your rival. This is random and hard to control. But you can make a bunch of WebSocket connections and test the speed of each by recording the time you get the same data. Then you drop the slow ones and just use the fast ones. But most exchanges won't like it if you open a ton of WebSocket connections, so they either shut them down or just don't respond to some.
 
 But if you create these connections from separate IP addresses you will be in the clear.
 
@@ -408,7 +408,7 @@ The whole point of arbitrage is that it is supposed to be risk-free. But you hav
 
 If you want to limit your exposure to crypto while still making money from arbitrage you should go short on cryptocurrency. Going short means betting against it.
 
-Almost all cryptocurrency prices are heavily correlated to bitcoin. So to remove all your risk you calculate the bitcoin value of your portfolio and short that much bitcoin. Now when crypto prices go down, your short investment should profit as much as your currencies lose. But shorting bitcoin opens up a whole other can of worms as the interest you pay is unpredictable. I remember it one time it jumped from around from 6\\% annually to 40\\%. Now you make or lose money based on the bitcoin interest rate.
+Almost all cryptocurrency prices are heavily correlated to bitcoin. So to remove all your risk you calculate the bitcoin value of your portfolio and short that much bitcoin. Now when crypto prices go down, your short investment should profit as much as your currencies lose. But shorting bitcoin opens up a whole other can of worms as the interest you pay is unpredictable. I remember it one time it jumped from around from 6% annually to 40%. Now you make or lose money based on the bitcoin interest rate.
 
 ## Bitcoin Beta
 
@@ -416,7 +416,7 @@ Towards the end of my arb experiments, I tried to get fancy. I used a topic from
 
 The price of a stock is based on both general market movements as well as firm-specific events. Some companies are much more sensitive to general market movements. A good example is a company that makes jewelry vs a company that makes bread. If the economy goes way down and people lose their jobs, they will not stop buying bread. But they might stop buying jewelry. So we expect the jewelry company to suffer, but the bread company to be fine.
 
-Beta is a statistical measurement of this effect and is based on how correlated the prices of two assets are. If a cryptocurrency has a beta of 2 compared to BTC, then when bitcoin goes up 10\\% in a day, we expect this cryptocurrency to go up 20\\% on that day.
+Beta is a statistical measurement of this effect and is based on how correlated the prices of two assets are. If a cryptocurrency has a beta of 2 compared to BTC, then when bitcoin goes up 10% in a day, we expect this cryptocurrency to go up 20% on that day.
 
 Usually, beta is calculated compared to the stock market. You compare the price of one stock to general price movements in the S&P 500 index. But cryptocurrency prices don't depend on stock movements. Instead, cryptocurrency prices rise and fall with the price of bitcoin. So I calculated the beta of my assets compared to bitcoin. Then I could short precisely the right amount of bitcoin so that my exposure evened out. If my portfolio beta was 0.9, and worth \\$1000, then I should short \\$900 BTC to cancel out currency fluctuations.
 
@@ -424,6 +424,6 @@ But I never got around to implementing this in practice. You could also short di
 
 # Why did I stop?
 
-This is all past tense. I've stopped my tri-arb bot. But for a brief moment, I got everything working and it was glorious. I earned an average monthly return of 5.3\\% (an annualized return of 86\\%) from June 2017 to August 2018. I was moving about 20 million dollars a month in volume. Then the profits started slowing down. Tri-arb relies on market inefficiencies and markets get more efficient over time. It became harder and harder to get the trade first and my percentage of immediately filled orders went down.
+This is all past tense. I've stopped my tri-arb bot. But for a brief moment, I got everything working and it was glorious. I earned an average monthly return of 5.3% (an annualized return of 86%) from June 2017 to August 2018. I was moving about 20 million dollars a month in volume. Then the profits started slowing down. Tri-arb relies on market inefficiencies and markets get more efficient over time. It became harder and harder to get the trade first and my percentage of immediately filled orders went down.
 
 The best time for market inefficiencies is when prices are swinging wildly. When one cryptocurrency shoots up in value, sometimes the other exchange rates lag. Tri-arb is best when prices are very volatile. Towards the end, my bot would lose money most days and only make money during big price swings. I stopped getting fair returns for the level of risk I was taking on. But every day new exchanges pop up⁠—new arb profits are waiting for the fleet-footed who can best their rival. Good luck to you all.
