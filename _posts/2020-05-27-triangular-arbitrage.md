@@ -422,8 +422,10 @@ Usually, beta is calculated compared to the stock market. You compare the price 
 
 But I never got around to implementing this in practice. You could also short different currencies in proportion to your holdings, but that gets even more complicated.
 
-# Why did I stop?
+# My Results
 
-This is all past tense. I've stopped my tri-arb bot. But for a brief moment, I got everything working and it was glorious. I earned an average monthly return of 5.3% (an annualized return of 86%) from June 2017 to August 2018. I was moving about 20 million dollars a month in volume. Then the profits started slowing down. Tri-arb relies on market inefficiencies and markets get more efficient over time. It became harder and harder to get the trade first and my percentage of immediately filled orders went down.
+I earned an average monthly return of 5.3% (an annualized return of 86%) from June 2017 to August 2018. I was moving about 20 million dollars a month in volume. Then the profits started slowing down. Tri-arb relies on market inefficiencies and markets get more efficient over time. It became harder and harder to get the trade first and my percentage of immediately filled orders went down.
 
-The best time for market inefficiencies is when prices are swinging wildly. When one cryptocurrency shoots up in value, sometimes the other exchange rates lag. Tri-arb is best when prices are very volatile. Towards the end, my bot would lose money most days and only make money during big price swings. I stopped getting fair returns for the level of risk I was taking on. But every day new exchanges pop up⁠—new arb profits are waiting for the fleet-footed who can best their rival. Good luck to you all.
+The best time for market inefficiencies is when prices are swinging wildly. When one cryptocurrency shoots up in value, sometimes the other exchange rates lag. Tri-arb is best when prices are very volatile. Towards the end my bot would break even most days and only make money during big price swings. I started to earn fair returns for the level of risk I was taking on. But I still feel there are lots of improvements to be made and new markets to tackle. And this isn't my last excursion into the jungle of cryptocurrency trading. I've got ideas that I'm not comfortable sharing publically as trading is a zero-sum game.
+
+Every day new cryptocurrency exchanges pop up⁠—new arbitrage profits are waiting for the fleet-footed who can best their rival. Good luck to all the brave souls who decide to play the game.
